@@ -12,5 +12,11 @@
         <input type="file" name="zipfile" accept=".zip">
         <button type="submit">Upload</button>
     </form>
+    <h2>Uploaded Files:</h2>
+    <ul>
+        <% files.forEach(function(file) { %>
+            <li><%= file %></li>
+        <% }); %>
+    </ul>
 </body>
 </html>

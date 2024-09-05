@@ -6,10 +6,18 @@ const fs = require('fs');
 const app = express();
 const upload = multer({ dest: 'uploads/' });
 
+app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    const uploadDir = path.join(__dirname, 'uploads');
+    fs.readdir(uploadDir, (err, files) => {
+        if (err) {
+            console.error('Error reading upload directory:', err);
+            files = [];
+        }
+        res.render('index', { files: files });
+    });
 });
 
 app.post('/upload', upload.single('zipfile'), (req, res) => {
@@ -23,10 +31,14 @@ app.post('/upload', upload.single('zipfile'), (req, res) => {
         return res.status(400).send('Please upload a zip file.');
     }
 
-    res.send('File uploaded successfully!');
+    res.render('success', { message: 'File uploaded successfully!' });
+
+    // Extract the zip file
+
+    //res.redirect('/');
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`);
 });
